@@ -183,4 +183,24 @@ public class TestStream {
         String str = optionValue.orElse("xxx") ;// 如果optionValue为false，即不存在以p开头的字符串时，使用"xxx"来替代
         System.out.println(str);
     }
+
+    // limit skip contact
+    @Test
+    public void testLimitSkipContact() {
+        // 1、limit(long size) 作用：截取stream的前size个元素。
+        System.out.println("========================= 分隔符 ==========================");
+        Stream<String> streamSelf = Stream.of("python","basic","php");
+        streamSelf.limit(2).forEach(System.out::println);//截取前两个
+
+        System.out.println("========================= 分隔符 ==========================");
+        // 2、skip(long size) 作用：跳过stream的前size个元素
+        streamSelf = Stream.of("python","basic","php");
+        streamSelf.skip(2).forEach(System.out::println);//跳过前两个
+
+        System.out.println("========================= 分隔符 ==========================");
+        // 3、contact(Stream<T>,Stream<T>)  作用：拼接两个stream
+        streamSelf = Stream.of("python","basic","php");
+        Stream streamSelf2 = Stream.of("python2","basic2","php2");
+        Stream.concat(streamSelf, streamSelf2).forEach(System.out::println);
+    }
 }
