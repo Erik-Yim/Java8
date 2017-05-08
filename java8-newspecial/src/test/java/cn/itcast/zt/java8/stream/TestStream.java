@@ -203,4 +203,40 @@ public class TestStream {
         Stream streamSelf2 = Stream.of("python2","basic2","php2");
         Stream.concat(streamSelf, streamSelf2).forEach(System.out::println);
     }
+
+    // 聚合函数 count max min findFirst findAny anyMatch allMatch noneMatch
+    // optional的最佳用法：ifPresent()-->如果有就输出，如果没有，什么都不做
+    // parallel()：将stream转为并行流，并行流的使用一定要注意线程安全
+    @Test
+    public void testCountMaxEsc() {
+        Stream<String> streamSelf = Stream.of("python","basic","php","b");
+        System.out.println(streamSelf.count());// 计算流中的元素个数
+
+        // 注意：Optional的使用，该使用方法的是最差的一种形式，见"六"。
+        streamSelf = Stream.of("python","basic","php","b");
+        Optional<String> largest = streamSelf.max(String::compareToIgnoreCase) ;
+        if(largest.isPresent()) {
+            System.out.println(largest.get());
+        }
+
+        streamSelf = Stream.of("python","basic","php","b");
+        Optional<String> firstMatch = streamSelf.filter(str->str.startsWith("b")).findFirst();// 寻找第一个符合条件的元素
+        streamSelf = Stream.of("python","basic","php","b");
+        Optional<String> anyMatch = streamSelf.parallel().filter(str->str.startsWith("b")).findAny();// 返回集合中符合条件的任意一个元素，对于并行处理非常好（因为多个线程只要有一个线程找到了，整个计算就会结束）
+        if(anyMatch.isPresent()) {
+            System.out.println(anyMatch.get());//这里的结果可能是b,有可能是basic
+        }
+
+        streamSelf = Stream.of("python","basic","php","b"); streamSelf = Stream.of("python","basic","php","b");
+        boolean isAnyMatch = streamSelf.parallel().anyMatch(str->str.startsWith("c"));//集合中是否有一个满足条件
+        System.out.println(isAnyMatch);
+
+        Stream<String> streamSelf3 = Stream.of("basic","b");
+        boolean isAllMatch = streamSelf3.parallel().allMatch(str->str.startsWith("b"));//集合中是否所有元素都满足条件
+        System.out.println(isAllMatch);
+
+        streamSelf = Stream.of("python","basic","php","b");
+        boolean isAllNotMatch = streamSelf.parallel().noneMatch(str->str.startsWith("p"));//集合中是否没有一个元素满足条件
+        System.out.println(isAllNotMatch);
+    }
 }
